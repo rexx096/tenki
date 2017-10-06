@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+    var xml_data="";
+    $(function(){
+        $("#kagawa,#ehime,#tokushima,#kochi").on("click",function(){    
+            console.log($(this).attr('xml_file'));
+            var shikoku = $(this).attr("xml_file");
+            
+            $.ajax({
+                url: 'http://javascriptajax.azurewebsites.net/get_tenki.php?city=' + shikoku,
+                type:'GET',
+                datatype: 'xml',        
+            
+            }).done(function(data){ //ajaxの通信に成功した場合
+                //受信成功時の処理をここに書く
+                //alert("受信成功");
+                xml_data = data;
+                // $("#kagawa").text("");
+                var description = $(data).find("description:eq(0)").text();
+                console.log(description);
+                $("#weather").text(description);
+        
+          //    var gazo=new Array();
+        	 // var week=new Array();
+          //       
+          //   $(data).find("item").each(function(){     
+          //       for(var i=2;i<10;i++){
+          //           
+        		// 	gazo[i]=  "<img src="+ $(data).find("image:eq(" +i + ")").find("url").html()+">"
+        		// 	week[i] =  $(data).find("description:eq(" +i + ")").text();
+        		//  }
+        		// for(var i=2;i<10;i++){
+        		// 	$("#week"+i+"").html(gazo[i]+week[i]);
+        		// }
+          //   });
+          
+          var i=0;
+                $(data).find("item").each(function(){
+                    if(i!=0){
+                        console.log($(this).find("description").text());
+                       
+                        $("#weather").append("<img src="+$(this).find("url").text()+">");
+                        $("#weather").append($(this).find("description").text()+"<br>");
+                        
+                   }
+                   i++;              
+                });
+                
+            }).fail(function(data){ //ajaxの通信に失敗した場合
+            	//受信失敗時の処理をここに書く
+            	alert("受信失敗");
+    
+            });
+         });
+     });
+
+    </script>
+</head>
+<body>
+    <h1>天気予報</h1>
+    <input type="button" id="ehime" value="愛媛県" xml_file="380010">
+    <input type="button" id="kagawa" value="香川県" xml_file="370000"><br>
+    <input type="button" id="kochi" value="高知県" xml_file="390010">
+    <input type="button" id="tokushima" value="徳島県" xml_file="360010">
+    
+    <p>ここに天気予報を表示します</p>
+
+    <div id ="weather"></div>
+    <div id ="week"></div>
+    <table>
+	<tbody>
+		<tr><td><p id="week2"></p></td><td><p id="week3"></p></td><td><p id="week4"></p></td><td><p id="week5"></p></td><td><p id="week6"></p></td><td><p id="week7"></p></td><td><p id="week8"></p></td><td><p id="week9"></p></td></tr>
+	</tbody>
+</table>
+	
+</body>
+</html>
